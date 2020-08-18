@@ -14,42 +14,62 @@
     <link rel="stylesheet" href="<%=request.getContextPath()%>/css/regist.css"/>
     <script type="text/javascript" src="js/jquery-1.4.2.js">
     </script>
+
+
     <script type="text/javascript">
         //文档就绪事件
         //离开焦点事件检查
         $(function () {
+
+
             $("#img_click").click(function () {
-                $(this).attr("src","<%=request.getContextPath()%>/ValidImgServlet?Time="+new Date().getTime());
+                $(this).attr("src", "<%=request.getContextPath()%>/ValidImgServlet?Time=" + new Date().getTime());
             });
 
             $("input[name='username']").blur(function () {
-                if(formObj.checkNull("username","用户名称不能为空")) {
+                if (formObj.checkNull("username", "用户名称不能为空")) {
                     //ajax检查用户是否存在
                     var username = $("input[name='username']").val();
                     $("#username_msg").load("<%=request.getContextPath()%>/AjaxCheckUserNameServlet", {"username": username});
                 }
             });
             $("input[name='password']").blur(function () {
-                formObj.checkNull("password","密码不能为空");
+                formObj.checkNull("password", "密码不能为空");
             });
             $("input[name='password2']").blur(function () {
-                formObj.checkNull("password2","确认密码不能为空");
+                formObj.checkNull("password2", "确认密码不能为空");
                 formObj.checkPasswd();
             });
             $("input[name='nickname']").blur(function () {
-                formObj.checkNull("nickname","昵称不能为空");
+                formObj.checkNull("nickname", "昵称不能为空");
             });
             $("input[name='email']").blur(function () {
-                if(formObj.checkNull("email","邮箱不能为空")){
-                    if(formObj.checkMail()) {
+                if (formObj.checkNull("email", "邮箱不能为空")) {
+                    if (formObj.checkMail()) {
                         var email = $("input[name='email']").val();
                         $("#email_msg").load("<%=request.getContextPath()%>/AjaxCheckEmailServlet", {"email": email});
                     }
                 }
             });
             $("input[name='valistr']").blur(function () {
-                if(formObj.checkNull("valistr","验证码不能为空")){
-                    //alert("<%=request.getAttribute("Code")%>");
+                <%
+                String Code="";
+            Cookie CodeTemp=null;
+            Cookie[] cs=request.getCookies();
+            if(cs!=null){
+                for (Cookie c : cs) {
+                    if("Code".equals(c.getName())){
+                        CodeTemp=c;
+                    }
+                }
+            }
+            if(CodeTemp!=null){
+                Code=CodeTemp.getValue();
+            }
+    %>
+
+                if (formObj.checkNull("valistr", "验证码不能为空")) {
+                    alert("<%=Code%>");
                 }
             });
         });
@@ -158,7 +178,8 @@
             <td class="tds">验证码：</td>
             <td>
                 <input type="text" name="valistr"/>
-                <img id="img_click" src="<%=request.getContextPath()%>/ValidImgServlet" width="" height="" alt="验证码生成错误"/><span></span>
+                <img id="img_click" src="<%=request.getContextPath()%>/ValidImgServlet" width="" height=""
+                     alt="验证码生成错误"/><span></span>
             </td>
         </tr>
         <tr>
